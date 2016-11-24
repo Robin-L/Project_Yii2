@@ -15,6 +15,9 @@ return [
 			'schemaCacheDuration' => 24*3600,
 			'schemaCache' => 'cache',
 		],
+        "authManager" => [
+            "class" => 'yii\rbac\DbManager',
+        ],
     ],
 	'language' => 'zh-CN',
 	'timezone' => 'Asia/Shanghai',
