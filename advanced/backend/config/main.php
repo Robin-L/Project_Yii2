@@ -15,6 +15,12 @@ return [
         'admin' => [
             'class' => 'mdm\admin\Module',
         ],
+        'redactor' => [
+            'class' => 'yii\redactor\RedactorModule',
+            'uploadDir' => '/../../frontend/web/uploads',
+            'uploadUrl' => '/../../frontend/web/uploads',
+            'imageAllowExtensions' => ['jpg', 'png', 'gif']
+        ],
     ],
     'aliases' => [
         '@mdm/admin' => '@vendor/mdmsoft/yii2-admin',

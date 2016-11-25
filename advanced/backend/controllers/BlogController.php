@@ -108,11 +108,11 @@ class BlogController extends Controller
         }
     }
 
+
     /**
-     * Updates an existing Blog model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
+     * @param $id
+     * @return string|\yii\web\Response
+     * @throws Exception
      */
     public function actionUpdate($id)
     {
