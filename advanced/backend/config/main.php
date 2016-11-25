@@ -55,6 +55,15 @@ return [
             'class' => 'yii\rbac\DbManager',
             'defaultRoles' => ['guest'],
         ],
+        /*'view' => [
+            'theme' => [ // 静态主题更换
+                'pathMap' => [
+                    '@app/views' => [
+                        '@app/themes/spring',
+                    ]
+                ]
+            ]
+        ],*/
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -72,6 +81,10 @@ return [
             'site/*',
             'debug/*'
         ]
+    ],
+    'as theme' => [
+        // 动态设置主题
+        'class' => 'backend\components\ThemeControl',
     ],
     'params' => $params,
 ];
