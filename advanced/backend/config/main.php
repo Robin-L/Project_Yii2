@@ -16,9 +16,9 @@ return [
             'class' => 'mdm\admin\Module',
         ],
         'redactor' => [
-            'class' => 'yii\redactor\RedactorModule',
-            'uploadDir' => '/../../frontend/web/uploads',
-            'uploadUrl' => '/../../frontend/web/uploads',
+            'class' => 'backend\components\RedactorModule',
+            'uploadDir' => '@frontend/web/uploads',
+            'uploadUrl' => 'http://fp_yii2.omz.cn/uploads',
             'imageAllowExtensions' => ['jpg', 'png', 'gif']
         ],
     ],

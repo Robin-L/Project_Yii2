@@ -22,7 +22,7 @@ use common\models\Blog;
             'imageUpload' => ['/redactor/upload/image'],
             'fileUpload' => ['/redactor/upload/file'],
             'lang' => 'zh_cn',
-            'plugins' => ['clips', 'fontcolor', 'imagemanager']
+            'plugins' => ['clips', 'fontcolor', 'imagemanager', 'video', 'table']
         ]
     ]) ?>
 
