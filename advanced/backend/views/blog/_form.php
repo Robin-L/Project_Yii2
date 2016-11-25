@@ -16,7 +16,15 @@ use common\models\Blog;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 6, 'maxlength' => true]) ?>
+    <?= $form->field($model, 'content')->widget(\yii\redactor\widgets\Redactor::className(), [
+        'clientOptions' => [
+            'imageManagerJson' => ['/redactor/upload/image-json'],
+            'imageUpload' => ['/redactor/upload/image'],
+            'fileUpload' => ['/redactor/upload/file'],
+            'lang' => 'zh_cn',
+            'plugins' => ['clips', 'fontcolor', 'imagemanager', 'video', 'table']
+        ]
+    ]) ?>
 
     <?= $form->field($model, 'is_delete')->dropDownList(Blog::dropDownList('is_delete')) ?>
 
