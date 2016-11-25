@@ -1,8 +1,9 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "blog".
@@ -17,6 +18,7 @@ use Yii;
  */
 class Blog extends \yii\db\ActiveRecord
 {
+    public  $category;
     /**
      * @inheritdoc
      */
@@ -31,7 +33,7 @@ class Blog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'content', 'created_at', 'updated_at'], 'required'],
+            [['title', 'content', 'category'], 'required'],
             [['id', 'views', 'is_delete'], 'integer'],
             [['content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
@@ -53,5 +55,16 @@ class Blog extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @param null $name
+     * @return array
+     * 获取枚举值
+     */
+    public static function dropDownList($name = null)
+    {
+        $dropDownList = [0 => '否', 1 => '是'];
+        return $dropDownList;
     }
 }
