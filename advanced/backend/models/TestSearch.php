@@ -5,12 +5,12 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Blog;
+use common\models\Test;
 
 /**
- * BlogSearch represents the model behind the search form about `backend\models\Blog`.
+ * TestSearch represents the model behind the search form about `common\models\Test`.
  */
-class BlogSearch extends Blog
+class TestSearch extends Test
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class BlogSearch extends Blog
     public function rules()
     {
         return [
-            [['id', 'views', 'is_delete'], 'integer'],
-            [['title', 'content', 'created_at', 'updated_at'], 'safe'],
+            [['id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class BlogSearch extends Blog
      */
     public function search($params)
     {
-        $query = Blog::find();
+        $query = Test::find();
 
         // add conditions that should always apply here
 
@@ -60,14 +60,9 @@ class BlogSearch extends Blog
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'views' => $this->views,
-            'is_delete' => $this->is_delete,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'content', $this->content]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

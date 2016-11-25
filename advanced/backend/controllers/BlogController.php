@@ -3,12 +3,14 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Blog;
+use common\models\Blog;
 use backend\models\BlogSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\base\Exception;
+use common\models\BlogCategory;
 
 /**
  * BlogController implements the CRUD actions for Blog model.
@@ -65,20 +67,44 @@ class BlogController extends Controller
     }
 
     /**
-     * Creates a new Blog model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws Exception
      */
     public function actionCreate()
     {
         $model = new Blog();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        // 调用validate，非save，save我们放在了事务中处理了
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // 开启事务
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model->save(false);
+                $blogId = $model->id;
+                $data = [];
+                foreach ($model->category as $k => $v) {
+                    // 数组形式[blog_id, category_id]，跟下面的batchInsert方法的第二个参数保持一致
+                    $data[] = [$blogId, $v];
+                }
+                // 获取BlogCategory模型的所有属性和表名
+                $blogCategory = new BlogCategory();
+                $attributes = array_keys($blogCategory->getAttributes());
+                $tableName = $blogCategory::tableName();
+                // 批量插入栏目到BlogCategory::tableName()表
+                Yii::$app->db->createCommand()->batchInsert(
+                    $tableName,
+                    $attributes,
+                    $data
+                )->execute();
+                // 提交
+                $transaction->commit();
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                // 回滚
+                $transaction->rollBack();
+                throw $e;
+            }
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->render('create', ['model' => $model]);
         }
     }
 
@@ -92,12 +118,38 @@ class BlogController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model->save(false);
+
+                $blogId = $model->id;
+                $data = [];
+                foreach ($model->category as $k => $v) {
+                    $data[] = [$blogId, $v];
+                }
+                $blogCategory = new BlogCategory();
+                $attributes = array_keys($blogCategory->getAttributes());
+                $tableName = $blogCategory::tableName();
+
+                // 先删除对应栏目
+                $sql = "DELETE FROM `{$tableName}` WHERE `blog_id` = '{$blogId}'";
+                Yii::$app->db->createCommand($sql)->execute();
+                // 再批量插入栏目到BlogCategory::tableName()
+                Yii::$app->db->createCommand()->batchInsert(
+                    $tableName,
+                    $attributes,
+                    $data
+                )->execute();
+                $transaction->commit();
+                return $this->redirect(['index']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
         } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $model->category = BlogCategory::getRelationCategorys($id);
+            return $this->render('update', ['model' => $model]);
         }
     }
 
