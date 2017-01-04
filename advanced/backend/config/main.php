@@ -70,14 +70,16 @@ return [
                 ]
             ]
         ],*/
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'showScriptName' => true,
+            'enableStrictParsing' => false,
+            'suffix' => '',
             'rules' => [
             ],
-        ],
-        */
+        ]
+        
     ],
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',

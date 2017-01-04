@@ -11,7 +11,7 @@ $this->title = 'Blogs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="blog-index">
-
+<?= common\widgets\TestWidget::widget() ?>
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
